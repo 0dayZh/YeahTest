@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+#import <UIScrollView+EmptyDataSet.h>
+#import <SVProgressHUD.h>
 
+@interface ViewController : UIViewController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, UITableViewDataSource, UITableViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 
