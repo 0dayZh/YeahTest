@@ -89,14 +89,79 @@
         _avatar = [resultDic objectForKey:@"avatar_url"];
         _name   = [resultDic objectForKey:@"name"];
         _email  = [resultDic objectForKey:@"email"];
-        NSLog(@"avatar_url = %@\n", _avatar);
-        NSLog(@"name = %@\n", _name);
-        NSLog(@"email = %@\n", _email);
+//        NSLog(@"avatar_url = %@\n", _avatar);
+//        NSLog(@"name = %@\n", _name);
+//        NSLog(@"email = %@\n", _email);
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            self.tableView.emptyDataSetSource = nil;
+            self.tableView.emptyDataSetDelegate = nil;
+            
+            self.tableView.dataSource = self;
+            self.tableView.delegate   = self;
+            
             [SVProgressHUD dismiss];
         });
     });
+}
+
+#pragma mark - UITableViewDataSource Methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 3;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *avatarID = @"Avatar";
+    static NSString *nameID  = @"Name";
+    static NSString *emailID = @"Email";
+    
+    UITableViewCell *cell;
+    switch (indexPath.row) {
+        case 0:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:avatarID];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:avatarID];
+            }
+            UIImageView * imageView = [[UIImageView alloc] initWithFrame:CGRectMake(([[UIScreen mainScreen] bounds].size.width - 200) / 2, 0, 200, 200)];
+            imageView.image = [[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", _avatar]]]];
+            [cell.contentView addSubview:imageView];
+            break;
+        }
+        case 1:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:nameID];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:nameID];
+            }
+            cell.textLabel.text = @"Name";
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", _name];
+            break;
+        }
+        case 2:
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:emailID];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:emailID];
+            }
+            cell.textLabel.text = @"Email";
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", _email];
+            break;
+        }
+        default:
+            break;
+    }
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        return 210;
+    }
+    return tableView.rowHeight;
 }
 
 @end
